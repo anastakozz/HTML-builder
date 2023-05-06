@@ -9,7 +9,7 @@ fsPromise.readdir(path.join(__dirname, './secret-folder'),
       let ext = path.extname(file.name);
       let name = path.basename(file.name, ext);
       fsPromise.stat(path.join(__dirname, 'secret-folder', file.name)).then(data => {
-        console.log(name + ' - ' + ext.replace('.', '') + ' - ' + data.size);
+        console.log(name + ' - ' + ext.replace('.', '') + ' - ' + data.size + 'B');
       });
     }
   });
