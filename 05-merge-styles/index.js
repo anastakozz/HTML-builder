@@ -8,13 +8,11 @@ fsPromises.readdir(path.join(__dirname, 'styles'),
   files.forEach( file => {
     let ext = path.extname(file.name);
     if(file.isFile() && ext === '.css'){
-      console.log(file.name);
       fsPromises.readFile(path.join(__dirname, 'styles', file.name), 
         { encoding: 'utf8' }).then( data => {
         output.write(data);
       });
     }
-            
   }
   );
 });
