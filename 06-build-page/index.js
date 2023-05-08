@@ -6,8 +6,11 @@ const fs = require('fs');
 function createDir() {
   fsPromises.mkdir(path.join(__dirname, 'project-dist'),
     { recursive: true }).then(() => {
-    fsPromises.mkdir(path.join(__dirname, 'project-dist', 'assets'),
-      { recursive: true });
+    fsPromises.rm(path.join(__dirname, 'files-copy'),
+      { recursive: true, force: true }).then (() => {
+      fsPromises.mkdir(path.join(__dirname, 'project-dist', 'assets'),
+        { recursive: true });
+    });
   });
 }
 createDir();
@@ -49,12 +52,16 @@ function mergeStyles() {
 }
 mergeStyles();
 
+
 let code = '';
 function bundleHtml() {
+//   const output = fs.createWriteStream(path.join(__dirname,'project-dist', 'index.html'));
   let part = '';
   fsPromises.readFile(path.join(__dirname, 'template.html'),
     { encoding: 'utf8' }).then ((data) => {
     code = data.toString();
+    console.log(code.length);
+    // console.log(code);
     fsPromises.readdir(path.join(__dirname, 'components'),
       { withFileTypes: true }).then (files => {
       files.forEach(file => {
@@ -64,18 +71,13 @@ function bundleHtml() {
           let name = path.basename(file.name, ext);
           part = content.toString();
           code = code.replace(`{{${name}}}`, part);
-          fsPromises.writeFile(path.join(__dirname,'project-dist', 'index.html'), code);
+          // console.log(code.length);
+          fsPromises.writeFile(path.join(__dirname,'project-dist', 'index.html'), code).then(() => {
+            return code;
+          });
         });
       });
     });
   });
-
-  console.log(code.length);
-  
-
-  
-  
-
-
 }
 bundleHtml();
