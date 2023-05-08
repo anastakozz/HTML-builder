@@ -48,3 +48,34 @@ function mergeStyles() {
   });
 }
 mergeStyles();
+
+let code = '';
+function bundleHtml() {
+  let part = '';
+  fsPromises.readFile(path.join(__dirname, 'template.html'),
+    { encoding: 'utf8' }).then ((data) => {
+    code = data.toString();
+    fsPromises.readdir(path.join(__dirname, 'components'),
+      { withFileTypes: true }).then (files => {
+      files.forEach(file => {
+        fsPromises.readFile(path.join(__dirname, 'components', file.name),
+          { encoding: 'utf8' }).then ((content) => {
+          let ext = path.extname(file.name);
+          let name = path.basename(file.name, ext);
+          part = content.toString();
+          code = code.replace(`{{${name}}}`, part);
+          fsPromises.writeFile(path.join(__dirname,'project-dist', 'index.html'), code);
+        });
+      });
+    });
+  });
+
+  console.log(code.length);
+  
+
+  
+  
+
+
+}
+bundleHtml();
